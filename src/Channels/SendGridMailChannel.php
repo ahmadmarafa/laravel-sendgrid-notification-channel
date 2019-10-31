@@ -56,7 +56,8 @@ class SendGridMailChannel
     {
         $email = new Mail(
             $message->from,
-            $message->tos
+            $message->tos ,
+            $message->vars ?? []
         );
 
         $email->setTemplateId($message->templateId);
