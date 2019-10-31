@@ -1,72 +1,86 @@
 <?php
 
-namespace Illuminate\Notifications\Channels;
+namespace Illuminate\Notifications\Messages;
 
-use SendGrid;
-use SendGrid\Mail\Mail;
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\SendGridMessage;
+use SendGrid\Mail\To;
+use SendGrid\Mail\From;
 
-class SendGridMailChannel
+class SendGridMessage
 {
     /**
-     * The SendGrid client instance.
+     * The "from" for the message.
      *
-     * @var \SendGrid
+     * @var \SendGrid\Mail\From
      */
-    protected $sendgrid;
+    public $from;
+    
+    
+
+    /**
+     * The "tos" for the message.
+     *
+     * @var array
+     */
+    public $tos = [];
+
+    /**
+     * The SendGrid Template ID for the message.
+     *
+     * @var string
+     */
+    public $templateId;
+    /**
+     * The SendGrid Template vars for the message.
+     *
+     * @var string
+     */
+    public $vars = [] ;
+
 
     /**
      * Create a new SendGrid channel instance.
      *
+     * @param  string  $templateId
      * @return void
      */
-    public function __construct(SendGrid $sendgrid)
+    public function __construct($templateId)
     {
-        $this->sendgrid = $sendgrid;
+        $this->templateId = $templateId;
     }
 
     /**
-     * Send the given notification.
+     * Set the "from".
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
-     * @return void
+     * @param  string  $email
+     * @param  string  $name
+     * @return $this
      */
-    public function send($notifiable, Notification $notification)
+    public function from($email, $name)
     {
-        $message = $notification->toSendGrid($notifiable);
+        $this->from = new From($email, $name);
 
-        if (! $message instanceof SendGridMessage) {
-            return;
-        }
-
-        return $this->sendgrid->send(
-            $this->buildMail($message)
-        );
+        return $this;
     }
 
     /**
-     * Build up an Mail for the SendGrid.
+     * Set the "tos".
      *
-     * @param  \Illuminate\Notifications\Messages\SendGridMessage  $message
-     * @return \SendGrid\Mail\Mail
+     * @param  string  $email
+     * @param  string  $name
+     * @param  array  $data
+     * @return $this
      */
-    public function buildMail(SendGridMessage $message)
+    public function to($email, $name, $data = [])
     {
+        $this->tos = array_merge($this->tos, [new To($email, $name, $data)]);
 
-        $email = new Mail(
-            $message->from,
-            $message->tos 
-        );
+        return $this;
+    }
+    
+    public function vars($vars)
+    {
+        $this->vars = $vars ;
 
-        foreach($message->vars as $key => $value) 
-        {
-            $email->addDynamicTemplateData($key , $value) ;
-        }
-
-        $email->setTemplateId($message->templateId);
-
-        return $email;
+        return $this;
     }
 }
