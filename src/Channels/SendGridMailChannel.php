@@ -54,11 +54,16 @@ class SendGridMailChannel
      */
     public function buildMail(SendGridMessage $message)
     {
+
         $email = new Mail(
             $message->from,
-            $message->tos ,
-            $message->vars ?? []
+            $message->tos 
         );
+
+        foreach($message->vars as $key => $value) 
+        {
+            $email->addDynamicTemplateData($key , $value) ;
+        }
 
         $email->setTemplateId($message->templateId);
 
