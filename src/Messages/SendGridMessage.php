@@ -13,6 +13,8 @@ class SendGridMessage
      * @var \SendGrid\Mail\From
      */
     public $from;
+    
+    
 
     /**
      * The "tos" for the message.
@@ -27,6 +29,13 @@ class SendGridMessage
      * @var string
      */
     public $templateId;
+    /**
+     * The SendGrid Template vars for the message.
+     *
+     * @var string
+     */
+    public $vars = [] ;
+
 
     /**
      * Create a new SendGrid channel instance.
@@ -66,5 +75,10 @@ class SendGridMessage
         $this->tos = array_merge($this->tos, [new To($email, $name, $data)]);
 
         return $this;
+    }
+    
+    public function vars($vars)
+    {
+        $this->vars = $vars ;
     }
 }
