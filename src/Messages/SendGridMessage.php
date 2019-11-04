@@ -34,7 +34,7 @@ class SendGridMessage
      *
      * @var string
      */
-    public $vars = [] ;
+    public $payload = [] ;
 
 
     /**
@@ -77,9 +77,9 @@ class SendGridMessage
         return $this;
     }
     
-    public function vars($vars)
+    public function payload($payload)
     {
-        $this->vars = $vars ;
+        $this->payload = $payload ;
 
         return $this;
     }
