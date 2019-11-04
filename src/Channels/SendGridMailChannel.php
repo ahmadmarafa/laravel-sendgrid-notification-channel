@@ -62,7 +62,7 @@ class SendGridMailChannel
 
         foreach($message->vars as $key => $value) 
         {
-            $email->addDynamicTemplateData($key , $value) ;
+            $email->addDynamicTemplateData((string) $key , (string) $value) ;
         }
 
         $email->setTemplateId($message->templateId);
