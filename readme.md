@@ -25,6 +25,7 @@ You should define a `toSendGrid` method on the notification class. This method w
     public function toSendGrid($notifiable)
     {
         return (new SendGridMessage('Your SendGrid template ID'))
+                    ->payload([ "template_var_1" => "template_value_1" ])
                     ->from('test@example.com', 'Example User')
                     ->to('test+test1@example.com', 'Example User1');
     }
